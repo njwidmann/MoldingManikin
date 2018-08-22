@@ -31,10 +31,10 @@ int v2_i = 0;
 
 
 KalmanSmooth kalman_filter_z(Q_z,R_z,1);
-KalmanSmooth kalman_filter_v1(Q_v,R_v,0);
-KalmanSmooth kalman_filter_v2(Q_v,R_v,0);
-KalmanSmooth kalman_filter_v(Q_v,R_v,0);
-KalmanSmooth kalman_filter_a(Q_a,R_a,2);
+KalmanSmooth kalman_filter_z2(Q_z,R_z,1);
+//KalmanSmooth kalman_filter_v1(Q_v,R_v,0);
+//KalmanSmooth kalman_filter_v2(Q_v,R_v/10,0);
+//KalmanSmooth kalman_filter_a(Q_a,R_a,2);
 
 void setupAccelerometer() 
 {
@@ -42,29 +42,35 @@ void setupAccelerometer()
   //calibrate z0 and a0
   for(int i = 0; i < initialCalibrationSampleSize; i++) {
     z0+=ReadAxis(zInput);
-    a0+=ReadAxis(aInput);
+    //a0+=ReadAxis(aInput);
   }
   z0 = z0 / (initialCalibrationSampleSize);
-  a0 = a0 / (initialCalibrationSampleSize);
-
+  //a0 = a0 / (initialCalibrationSampleSize);
+  /*
   for(int i = 0; i < v2_log_size; i++) {
     v2_log[i] = 0;
   }
+  */
   
 }
 
+float z_raw = 0;
+float z_smoothed2 = 0;
 
 void updateAccelerometer() 
 {
-  int z_raw = ReadAxis(zInput);
+  z_raw = ReadAxis(zInput);
   
-  int z = z_raw - z0;
-  
-  z_smoothed = kalman_filter_z.smooth(z);
-  //z_smoothed = z;
-  
-  updateZLog(z_smoothed);
+  z_raw = z_raw - z0;
 
+  z_smoothed = kalman_filter_z.smooth(z_raw);
+  
+  z_smoothed2 = kalman_filter_z2.smooth(z_smoothed);
+  
+  /*
+  updateZLog(z_smoothed2);
+
+  
   int a_raw = ReadAxis(aInput);
   
   int a = a_raw - a0;
@@ -72,32 +78,43 @@ void updateAccelerometer()
   float a_smoothed_prev = a_smoothed;
   
   a_smoothed = kalman_filter_a.smooth(a);
+  //a_smoothed = a_smoothed + -0.1*v2_smoothed/a_smoothed;
   //a_smoothed = a;
-
+  
+  
   v1 = findSlope(z_log);
 
-  v1_smoothed = kalman_filter_v1.smooth(v1);
+  v_smoothed = kalman_filter_v1.smooth(v1);
+  v_smoothed = kalman_filter_v2.smooth(v_smoothed);
 
-  v2 = v2 + (a_smoothed_prev + a_smoothed)/2;
+  //v2 = v2 + (a_smoothed_prev + a_smoothed)/2;
+  //float v2_smoothed_prev = v2_smoothed;
+  //v2_smoothed = kalman_filter_v2.smooth(v2);
+  //v2_smoothed = v2;
 
-  float v2_smoothed_temp = kalman_filter_v2.smooth(v2);
+  //v1 = v1 + (v2_smoothed_prev + v2_smoothed)/2;
 
-  if(z < 1) {
-    updateV2Log(v2_smoothed_temp);
-  }
+  //v1_smoothed = kalman_filter_v1.smooth(v1);
+
+  //if(z < 1) {
+  //  updateV2Log(v2_smoothed_temp);
+  //}
   
-  float v2_offset = findAvg(v2_log);
+  //float v2_offset = findAvg(v2_log);
 
-  v2_smoothed = v2_smoothed_temp - v2_offset;
+  //v2_smoothed = v2 - v2_smoothed_temp;
 
-  if(abs(v2_smoothed) > v2_max)
-    v2_max = abs(v2_smoothed);
+  //if(abs(v2_smoothed) > v2_max)
+  //  v2_max = abs(v2_smoothed);
+  */
   
-  v_smoothed = kalman_filter_v.smooth(v1_smoothed);// / 0.25 * abs(v2_smoothed));
+  
   
 }
 
 float getZ() {return z_smoothed;}
+float getZ_raw() {return z_raw;}
+float getZ2() {return z_smoothed2;}
 float getV() {return v_smoothed;}
 float getV1() {return v1_smoothed;}
 float getV2() {return v2_smoothed;}

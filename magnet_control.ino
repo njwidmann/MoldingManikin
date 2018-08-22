@@ -1,5 +1,5 @@
-const int PIN_a = 10;
-const int PIN_b = 11;
+const int PIN_a = 3;
+const int PIN_b = 5;
 
 const int DIRECTION_OFF = 0; 
 const int DIRECTION_UP = 1;

@@ -33,7 +33,5 @@ void setMagnet(int direction, int pwm) {
     digitalWrite(PIN_a, LOW);
     digitalWrite(PIN_b, LOW);
   }
-
-  
 }
 

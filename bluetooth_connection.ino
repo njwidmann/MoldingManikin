@@ -5,6 +5,9 @@ const String hashtag = "#";
 const String squiggly = "~";
 const String semicolon = ";";
 
+float Q = 0.001;
+float R = 0.1;
+
 KalmanSmooth kalman_filter_depth(Q,R,0);
 KalmanSmooth kalman_filter_depth2(Q,R/10,0);
 

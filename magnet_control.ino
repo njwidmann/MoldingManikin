@@ -1,5 +1,5 @@
-const int PIN_a = 3;
-const int PIN_b = 5;
+const int PIN_a = 5;
+const int PIN_b = 6;
 
 const int DIRECTION_OFF = 0; 
 const int DIRECTION_UP = 1;
@@ -23,10 +23,10 @@ void setMagnetOff() {
 }
 
 void setMagnet(int direction, int pwm) {
-  if(direction == DIRECTION_DOWN) {
+  if(direction == DIRECTION_UP) {
     analogWrite(PIN_a, pwm);
     digitalWrite(PIN_b, LOW);
-  } else if(direction == DIRECTION_UP) {
+  } else if(direction == DIRECTION_DOWN) {
     digitalWrite(PIN_a, LOW);
     analogWrite(PIN_b, pwm);
   } else {
@@ -34,4 +34,3 @@ void setMagnet(int direction, int pwm) {
     digitalWrite(PIN_b, LOW);
   }
 }
-
